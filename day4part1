@@ -1,0 +1,88 @@
+"""
+rules:
+1. numdigits = 6
+2. value in the searchsapce: (input2 - input 1) !mine happen to both be 6 digits, but in the future, they might not be.
+	digits in input1 and input 2 must always be >= than numdigits
+3. atleast two adjacent digits are the same 
+4. the values in successive positions never decrease
+
+goal:
+find the number of different valid passwords in the searchspace
+
+observations:
+apply most restrictive rules first reduce runtime
+
+
+notes to self:
+control for anomalies AFTER you have reach the PRIMARY goal
+"""
+
+#initialize inputs
+in1 = 171309
+in2 =  643603  
+# in2 = in1+10000 #limit search space for quick check that script's working
+pw_length = 6
+
+#create function to count digits in inputs
+def ic(ins):
+	return len(str(ins))	
+
+#sanity check inputs: possible to satisfy rule 1:
+
+if (ic(in1)<pw_length):
+	print("trim search space; first input cannot satisfy rule 1: insufficient digits")
+elif (in2<in1):
+	print("invalid search space: input2<input1")
+
+#create list of values in the search space:
+pws = []
+for k in range(in2-in1): #don't re-add in1, start from k =1
+	pws.append(in1+k)
+	k=k+1
+
+#create function to split values into list of ints
+def split(val):
+	return [int(d) for d in str(val)]
+
+	
+#apply most restrictive filter to list of possible passwords (pws)
+
+# start with last digit in the password, compare to second to last
+a=len(split(in2))-1 #using length to ref an index, subtract 1
+
+
+rept = []
+for j in range(a,2,-1):
+#stopping j at 1 because we're comparing 2nd to 1st (going backward)
+	to_clear =[]
+	for i in range(len(pws)-1):
+		pw_n = pws[i] #possible password in list
+		split_pws = split(pw_n) #list of ints in the poss.pw
+		last = split_pws[j] #last int in poss.pw
+		sec_last = split_pws[j-1]
+		
+		if last<sec_last:
+			to_clear.append(pws.index(pw_n)) # pw violated "never decreasing"
+			
+		# # since we're already doing pairwise comparison, track indexes which have a match	
+		# elif sec_last==last:
+			# rept.append(pws.index(pw_n))
+		
+		i+=1
+
+
+# remove the set of passwords which violated "never decreasing"
+	for k in sorted(to_clear, reverse=True):
+		del pws[k]
+		k+=1
+	j+=1
+
+# remove the passwords which didn't have a repeated value
+# a=len(pws)-1
+
+# answer=0
+# for l in range(a):
+	# if pws.index(pws[l]) in rept:
+		# answer +=1
+
+# print("there are %d possible passwords in the set"%(answer))
