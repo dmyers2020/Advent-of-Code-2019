@@ -1,0 +1,41 @@
+input = "1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,1,9,19,1,5,19,23,1,6,23,27,1,27,10,31,1,31,5,35,2,10,35,39,1,9,39,43,1,43,5,47,1,47,6,51,2,51,6,55,1,13,55,59,2,6,59,63,1,63,5,67,2,10,67,71,1,9,71,75,1,75,13,79,1,10,79,83,2,83,13,87,1,87,6,91,1,5,91,95,2,95,9,99,1,5,99,103,1,103,6,107,2,107,13,111,1,111,10,115,2,10,115,119,1,9,119,123,1,123,9,127,1,13,127,131,2,10,131,135,1,135,5,139,1,2,139,143,1,143,5,0,99,2,0,14,0"
+#original input
+
+input = "1,12,2,3,1,1,2,3,1,3,4,3,1,5,0,3,2,1,9,19,1,5,19,23,1,6,23,27,1,27,10,31,1,31,5,35,2,10,35,39,1,9,39,43,1,43,5,47,1,47,6,51,2,51,6,55,1,13,55,59,2,6,59,63,1,63,5,67,2,10,67,71,1,9,71,75,1,75,13,79,1,10,79,83,2,83,13,87,1,87,6,91,1,5,91,95,2,95,9,99,1,5,99,103,1,103,6,107,2,107,13,111,1,111,10,115,2,10,115,119,1,9,119,123,1,123,9,127,1,13,127,131,2,10,131,135,1,135,5,139,1,2,139,143,1,143,5,0,99,2,0,14,0"
+#problem input 12, 2 at position 1 and 2 respectively
+
+array = (input.split(','))
+#make array with items of input
+
+print("There are %d items in the input"%(len(array)))
+#print length of array
+
+def checker(array):
+    j = 0
+    while (j < (len(array)-1)):
+    #loop through entire array
+        opcode = int(array[j])
+        arg1 = int(array[(j+1)])
+        arg_val1 = int(array[arg1])
+        arg2 = int(array[(j+2)])
+        arg_val2 = int(array[arg2])
+        store_at = int(array[(j+3)])
+        #print ("%d, %d (+/*) %d, STORE AT array[%s]"%(opcode, arg_val1, arg_val2, store_at))
+
+        if opcode == 1:
+          res = arg_val1 + arg_val2
+          #print ("%d PLUS %d = %d, STORE AT array[%s]"%(arg_val1, arg_val2, res, store_at))
+          array[store_at] = res
+
+        elif opcode == 2:
+          res = arg_val1 * arg_val2
+          #print ("%d TIMES %d = %d, STORE AT array[%s]"%(arg_val1, arg_val2, res, store_at))
+          array[store_at] = res
+
+        else:
+          print ("HALT! opcode: %d, arg_val1: %d, arg_val2: %d, store_at array[%s]"%(opcode, arg_val1, arg_val2, store_at))
+          print("Array[0]: %d"%(array[0]))
+
+        j = j + 4
+        #go to next fourth item
+
