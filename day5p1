@@ -1,0 +1,157 @@
+#Day 5: Sunny with a Chance of Asteroids
+#The Thermal Environment Supervision Terminal (TEST) program
+#this is an extension of d2's program
+
+datai = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,9,90,224,1001,224,-99,224,4,224,102,8,223,223,1001,224,6,224,1,223,224,223,1102,26,62,225,1101,11,75,225,1101,90,43,225,2,70,35,224,101,-1716,224,224,4,224,1002,223,8,223,101,4,224,224,1,223,224,223,1101,94,66,225,1102,65,89,225,101,53,144,224,101,-134,224,224,4,224,1002,223,8,223,1001,224,5,224,1,224,223,223,1102,16,32,224,101,-512,224,224,4,224,102,8,223,223,101,5,224,224,1,224,223,223,1001,43,57,224,101,-147,224,224,4,224,102,8,223,223,101,4,224,224,1,223,224,223,1101,36,81,225,1002,39,9,224,1001,224,-99,224,4,224,1002,223,8,223,101,2,224,224,1,223,224,223,1,213,218,224,1001,224,-98,224,4,224,102,8,223,223,101,2,224,224,1,224,223,223,102,21,74,224,101,-1869,224,224,4,224,102,8,223,223,1001,224,7,224,1,224,223,223,1101,25,15,225,1101,64,73,225,4,223,99,0,0,0,677,0,0,0,0,0,0,0,0,0,0,0,1105,0,99999,1105,227,247,1105,1,99999,1005,227,99999,1005,0,256,1105,1,99999,1106,227,99999,1106,0,265,1105,1,99999,1006,0,99999,1006,227,274,1105,1,99999,1105,1,280,1105,1,99999,1,225,225,225,1101,294,0,0,105,1,0,1105,1,99999,1106,0,300,1105,1,99999,1,225,225,225,1101,314,0,0,106,0,0,1105,1,99999,1008,226,677,224,1002,223,2,223,1005,224,329,1001,223,1,223,1007,677,677,224,102,2,223,223,1005,224,344,101,1,223,223,108,226,677,224,102,2,223,223,1006,224,359,101,1,223,223,108,226,226,224,1002,223,2,223,1005,224,374,1001,223,1,223,7,226,226,224,1002,223,2,223,1006,224,389,1001,223,1,223,8,226,677,224,1002,223,2,223,1006,224,404,1001,223,1,223,107,677,677,224,1002,223,2,223,1006,224,419,101,1,223,223,1008,677,677,224,102,2,223,223,1006,224,434,101,1,223,223,1107,226,677,224,102,2,223,223,1005,224,449,1001,223,1,223,107,226,226,224,102,2,223,223,1006,224,464,101,1,223,223,107,226,677,224,102,2,223,223,1005,224,479,1001,223,1,223,8,677,226,224,102,2,223,223,1005,224,494,1001,223,1,223,1108,226,677,224,102,2,223,223,1006,224,509,101,1,223,223,1107,677,226,224,1002,223,2,223,1005,224,524,101,1,223,223,1008,226,226,224,1002,223,2,223,1005,224,539,101,1,223,223,7,226,677,224,1002,223,2,223,1005,224,554,101,1,223,223,1107,677,677,224,1002,223,2,223,1006,224,569,1001,223,1,223,8,226,226,224,1002,223,2,223,1006,224,584,101,1,223,223,1108,677,677,224,102,2,223,223,1005,224,599,101,1,223,223,108,677,677,224,1002,223,2,223,1006,224,614,101,1,223,223,1007,226,226,224,102,2,223,223,1005,224,629,1001,223,1,223,7,677,226,224,1002,223,2,223,1005,224,644,101,1,223,223,1007,226,677,224,102,2,223,223,1005,224,659,1001,223,1,223,1108,677,226,224,102,2,223,223,1006,224,674,101,1,223,223,4,223,99,226]
+# datai =[3,0,4,0,99]  #got opcode 3 and 4 working. 
+
+#There are 2 parts in part 1 of day 5. 
+# Two new op codes exist. Lets handle those first:
+
+# Opcode 3 takes a single integer as input and saves it to the position given by its only parameter. 
+# For example, the instruction 3,50 would take an input value and store it at address 50.
+# Opcode 4 outputs the value of its only parameter. 
+# For example, the instruction 4,50 would output the value at address 50.
+
+#Adding parameter modes.
+
+# ABCDE
+ # 1002
+
+# DE - two-digit opcode,      02 == opcode 2
+ # C - mode of 1st parameter,  0 == position mode
+ # B - mode of 2nd parameter,  1 == immediate mode
+ # A - mode of 3rd parameter,  0 == position mode,
+                                  # omitted due to being a leading zero
+
+#Parameters that an instruction writes to will never be in immediate mode.
+
+datac = datai #copy of datai: the initial data
+
+def listify(val):
+	return[int(d) for d in str(val)]
+	
+def opc(data):
+	j=0
+		
+	while (j < len(data)-1):
+		op = data[j]
+		if op == 99:
+			print('Op code 99') 
+			break
+		op_list = listify(data[j])
+		#parse the opcode at position j
+		op = op_list[len(op_list)-1]+op_list[len(op_list)-2]
+		# print(data[j])
+		# print(op_list)
+		# print(datai[0:10])
+		# val1 = data[data[j+1]] #parameter1
+		# val2 = data[data[j+2]] #parameter2
+		# targ = data[j+3] #parameter3
+		print("whats up with j=  %d"%(j))
+		print(op)
+		print(op_list)
+		if len(op_list) > 3:
+			op = op_list[len(op_list)-1]+op_list[len(op_list)-2]
+			print("made it")
+			print(op)
+		else:
+			op = op_list[len(op_list)-1]
+		#the opcode is the last 2 digits of op_list (leading 0's will be dropped)
+		
+		if op == 99:
+			print('Op code 99') 
+			break
+			
+		elif op == 1 or op == 2:
+			print("made it?")
+			#addition/multiplication, 3 parameters: val1, val2, target
+			n_modes_undef = 0
+			if len(op_list)==1:
+				for k in range(4):
+					#add "lz" in place of the missing leading zeros
+					op_list=['lz']+op_list 
+					n_modes_undef=3
+			elif len(op_list)<6:
+				for k in range(5-(len(op_list))):
+					op_list=['lz']+op_list 
+					n_modes_undef=k+1
+			else:
+				print('op_list too long, program halt.')
+				print(op_list)
+			
+			p = ['v1','v2','targ']
+			#extract values from data based on parameter mode
+			for n in range(3):
+				print(n)
+				# print(p)
+				# print(op_list)
+				# print(op_list[len(op_list)-3-n])
+				# get p1 and p2; when=2 write to target based on mode of p3.
+				print("made it2?")
+				# immediate mode for p1/p2
+				if op_list[len(op_list)-3-n]==1:
+					print("made it3?")
+					# print(len(op_list))
+					# print(op_list[len(op_list)-n-3])
+					# print(n)
+					# print(op_list[len(op_list)-3-n])
+					# print(op_list[len(op_list)-3-n]==1)
+					# n=2, means p1 and p2 have been found - write to target
+					if n ==2:
+						p[2]=data[j+3]
+						# print("line85:  %d"%(p[2]))
+						if op == 1:
+							#addition, immediate mode for target
+							data[j+3] = p[0]+ p[1]
+						elif op == 2:
+							#multiplication, immediate mode for target
+							data[j+3] = p[0] * p[1]						
+						j = j+4
+
+						# until n = 2, get the immediate value for p1 and p2
+					else:
+						p[n] = int(data[j+n+1])
+						n=n+1
+						print("made it4?")
+					# print("stuck %d" %(p[n]))
+					print(range(n_modes_undef))
+				
+					print("print n %d"%(n))
+				
+						
+				# position mode for p1/p2 (0 or lz)
+				else:
+					print("made it5?")
+					# n=2, means p1 and p2 have been found - write to target
+					if n ==2:
+						p[2]=data[data[j+3]]
+						# print(p)
+						if op == 1:
+							data[data[j+3]] = p[0] + p[1]
+							#addition, immediate mode for target
+						elif op == 2:
+							data[data[j+3]] = p[0] * p[1]
+							#multiplication, immediate mode for target
+						j = j+4
+						# continue
+					else:
+						p[n] = int(data[data[j+n+1]])
+				
+		elif op == 3:
+			ui = input("Enter a single integer and press Enter:  ")
+			data[data[j+1]] = ui
+			j=j+2 #location of next op code, since op4 only has 1 param
+			continue
+		
+		elif op == 4:
+			print("j= %d  op = %d "%(j, op))
+			print(data[data[j+1]])
+			j=j+2 #location of next op code, since op4 only has 1 param
+			continue
+			
+		else:
+			print("op code invalid, program halted op=%d"%(op))
+			break
+		
+opc(datac)
