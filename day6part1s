@@ -1,0 +1,32 @@
+#day 6 part 1 - orbital maps
+with open("dd6p1_input.txt","r") as f:
+	orbiters = []
+	orbited = []
+	pairs =[]
+	for line in f:
+		for pair in line.split():
+			pairs.append(pair.split(")"))
+			pair = pair.split(")")
+			ed, er = pair[0], pair[1]
+			orbited.append(ed)
+			orbiters.append(er)
+	orbit_list=[]
+	for planet in orbited:
+		local_orbit = [planet]
+		for x in range(len(orbiters)-1):
+			if pairs[x][0] == planet:
+				local_orbit.append(pairs[x][1])
+		orbit_list.append(local_orbit)
+	
+	orbit_order=[]
+	for orbit in orbit_list:
+		planet = orbit[0]
+		for other_orbit in orbit_list:
+			if (other_orbit != orbit) & (planet in other_orbit):
+				orbit_order.append(other_orbit)
+	
+	num_orbits=0
+	for orbit in orbit_order:
+		num_orbits+=len(orbit)
+	
+	print(num_orbits)
