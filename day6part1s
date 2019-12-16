@@ -1,32 +1,47 @@
 #day 6 part 1 - orbital maps
-with open("dd6p1_input.txt","r") as f:
+# with open("dd6p1_input.txt","r") as f:
+with open("dd6p1_ex.txt","r") as f:
+	pairs =[]
 	orbiters = []
 	orbited = []
-	pairs =[]
 	for line in f:
 		for pair in line.split():
-			pairs.append(pair.split(")"))
-			pair = pair.split(")")
-			ed, er = pair[0], pair[1]
-			orbited.append(ed)
-			orbiters.append(er)
-	orbit_list=[]
-	for planet in orbited:
-		local_orbit = [planet]
-		for x in range(len(orbiters)-1):
-			if pairs[x][0] == planet:
-				local_orbit.append(pairs[x][1])
-		orbit_list.append(local_orbit)
+				pairs.append(pair.split(")"))
+				pair = pair.split(")")
+				ed, er = pair[0],pair[1]
+				orbited.append(ed)
+				orbiters.append(er)
+
+	def next_index(orbited,ed):
+		start_at = -1
+		checked_lines= []
+		while True:
+			try: 
+				line_check=orbited.index(ed,start_at+1)
+			except ValueError:
+				break
+			else:
+				checked_lines.append(line_check)
+				start_at=line_check
+		return checked_lines
+
+	def g(pairs, ed):
+		if ed in orbited:
+			checked_lines=next_index(orbited,ed)
+			for a in checked_lines:
+				er = pairs[a][1]
+				list_a.append(er)
+				ed = er
+				g(pairs,ed)
+					
+	ed, er = pairs[0][0], pairs[0][1]
 	
-	orbit_order=[]
-	for orbit in orbit_list:
-		planet = orbit[0]
-		for other_orbit in orbit_list:
-			if (other_orbit != orbit) & (planet in other_orbit):
-				orbit_order.append(other_orbit)
-	
-	num_orbits=0
-	for orbit in orbit_order:
-		num_orbits+=len(orbit)
-	
-	print(num_orbits)
+	list_a = [ed]	
+	for ed in orbited:
+		g(pairs,ed)
+		
+	num_orbits2 =0
+	for x in range(len(list_a)-1):
+		num_orbits2 = num_orbits2+x
+	print(num_orbits2)
+		
